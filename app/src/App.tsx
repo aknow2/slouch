@@ -1,51 +1,54 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled'
 import './App.css';
 import { ThemeProvider } from '@emotion/react';
-
-const spacing = (x: number = 1) => 8 * x
-const theme = {
-  spacing,
-}
-
-interface Props {
-  onClick?: (ev: MouseEvent) => void
-
-}
-
-
-const Button = styled.div`
-  width: 64px;
-  height: 64px;
-  user-select: none;
-  border: none;
-  text-decoration: none;
-  border-radius: 32px;
-  background: linear-gradient(145deg, #fce4ec, #e3cdd4);
-  box-shadow:  6px 6px 13px #d6c2c9,
-              -6px -6px 13px #ffffff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  &:hover {
-    background: linear-gradient(145deg, #e3cdd4, #fce4ec);
-  }
-  &::active {
-    background: #ff1744;
-    box-shadow: inset 20px 20px 60px #d9143a,
-            inset -20px -20px 60px #ff1a4e;
-  }
-`
+import RecBtn from './components/RecBtn';
+import RecordingCard from './components/RecordingCard';
+import { spacing, theme } from './components/theme';
+import TagTextField from './components/TagTextField';
 
 const Main = styled.main`
   padding-top: ${spacing(4)};
+  padding-left: ${spacing(1)};
+  padding-right: ${spacing(1)};
+`
+const Container = styled.div`
+  width: '100%';
+  height: '100%';
+  box-sizing: 'border-box';
 `
 
+
 const App: React.FC = () => {
+  const [ isRecording, setRecording ] = useState(false)
+  const [ tag, setTag ] = useState('')
+  const onRecording = () => {
+    setRecording(true)
+  }
+  const onStop = () => {
+    setRecording(false)
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <Main className="App">
-        <Button>Rec.</Button>
+        <Container>
+          <RecordingCard>
+            <RecBtn
+              isRecording={isRecording}
+              onRecording={onRecording}
+              onStop={onStop}
+              disabled={false}
+            />
+            <TagTextField 
+              disabled={isRecording}
+              onChange={(ev)=> {
+                setTag(ev.target.value)
+              }}
+              text={tag}
+            />
+          </RecordingCard>
+        </Container>
       </Main>
     </ThemeProvider>
   );
