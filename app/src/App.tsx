@@ -42,9 +42,10 @@ const App: React.FC = () => {
             />
             <TagTextField 
               disabled={isRecording}
-              onChange={(ev)=> {
-                setTag(ev.target.value)
+              onChange={(tag)=> {
+                setTag(tag)
               }}
+              tags={[{ id: '1', label: 'programing'}, { id: '2', label: 'watch movie'}]}
               text={tag}
             />
           </RecordingCard>
