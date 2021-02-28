@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import styled from "@emotion/styled"
 import TagIcon from '../icons/tag.svg';
 import DropDown from '../icons/drop_down.svg';
@@ -77,34 +77,34 @@ interface Props {
   text: string;
   onChange: (tag: string) => void
 }
-let canCloseMenu = true;
 const TagTextField: React.FC<Props> = ({ disabled, tags, text, onChange }) => {
+  let canCloseMenu = useRef(false);
   const [ showMenu, toggleMenu ] = useState(false)
   const [ filteredTags, setFilteredTags ] = useState(tags)
   const TextGroup = disabled ? DisableTextGroup : TextBoxGroup;
   const onChangeText = useCallback((ev: React.ChangeEvent<HTMLInputElement>) => {
     onChange(ev.target.value)
     setFilteredTags(tags.filter((t) => t.label.includes(ev.target.value)))
-  }, [onChange])
+  }, [onChange, tags])
   const onFocus = useCallback(() => {
     toggleMenu(true)
-  }, [onChange])
+  }, [])
   const onBlur = useCallback(() => {
-    if (canCloseMenu) {
+    if (canCloseMenu.current) {
       toggleMenu(false)
     }
-  }, [onChange])
+  }, [])
   const onSelectTag = useCallback((tag: Tag) => {
     onChange(tag.label)
     toggleMenu(false)
   }, [onChange])
 
   const onEnter = useCallback(() => {
-    canCloseMenu = false;
-  }, [onChange])
+    canCloseMenu.current = false;
+  }, [])
   const onLeave = useCallback(() => {
-    canCloseMenu = true;
-  }, [onChange])
+    canCloseMenu.current = true;
+  }, [])
 
   return <TextBoxContainer>
       <img src={TagIcon} width="18" height="18" alt="tag"/>
